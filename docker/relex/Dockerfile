@@ -1,11 +1,12 @@
 # For use with Docker, a manager for Linux Containers
 # Download from https://www.docker.io/gettingstarted/
 # Overview at http://kencochrane.net/blog/2013/08/the-docker-guidebook/
-# Build with 'sudo docker build -t username/relex .'
-# Run with 'sudo docker build -t username/relex .'
+# Build with 'sudo docker build -t $USER/relex .'
+# Run with 'CONTAINER_ID=$(sudo docker run -d $USER/relex)'
+# Find IP, port and password from 'docker inspect' and 'docker logs'
 # From scratch, without first cloning RelEx source, run
-#  'docker build github.com/opencog/relex'
-#
+#  'docker build github.com/TBD'
+
 FROM ubuntu:12.04
 MAINTAINER David Hart "dhart@opencog.org"
 
@@ -17,7 +18,8 @@ RUN echo "deb http://mirror.optus.net.au/ubuntu precise-updates main universe" >
 RUN apt-get update 
 RUN apt-get -y install python-software-properties wget unzip bzr
 
-#Optional: for desktop-ish container. Thanks @rogaha
+# Optional: for desktop-ish container. Thanks @rogaha
+#           based on https://github.com/rogaha/docker-desktop
 RUN apt-get install -y xpra rox-filer ssh pwgen xserver-xephyr xdm fluxbox rxvt
 # Configuring xdm to allow connections from any IP address and ssh to allow X11 Forwarding.
 RUN sed -i 's/DisplayManager.requestPort/!DisplayManager.requestPort/g' /etc/X11/xdm/xdm-config
@@ -56,6 +58,8 @@ RUN cp -v jwnl14-rc2/jwnl.jar /usr/share/java/ && chmod 0644 /usr/share/java/jwn
 
 RUN wget http://download.java.net/maven/2/gnu/getopt/java-getopt/1.0.13/java-getopt-1.0.13.jar
 RUN cp -v java-getopt-1.0.13.jar /usr/share/java/gnu-getopt.jar
+
+#todo: setup user to run relex
 
 RUN bzr branch lp:relex
 RUN cd relex && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ant
