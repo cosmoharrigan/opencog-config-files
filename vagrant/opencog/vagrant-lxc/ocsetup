@@ -47,7 +47,6 @@ PACKAGES="
 		libicu-dev \
 		libbz2-dev \
 		libgsl0-dev \
-		libxmlrpc-c3-dev \
 		unixodbc-dev \
 		libxerces-c2-dev \
 		tcl-dev \
@@ -56,7 +55,6 @@ PACKAGES="
 		libprotoc-dev \
 		libcurl4-gnutls-dev \
 		libsdl-gfx1.2-dev \
-		libssl-dev \
                 "
 
 PACKAGES_FETCH="	
