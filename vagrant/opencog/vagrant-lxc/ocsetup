@@ -24,6 +24,7 @@ REPOSITORIES="
 
 PACKAGES="	
 		g++-4.6 \
+		make \
 		cmake \
 		cxxtest \
 		libboost-all-dev \
@@ -32,6 +33,15 @@ PACKAGES="
 		guile-1.8-dev \
 		python-dev \
 		python-pip \
+		python-numpy \
+		python-matplotlib \
+		python-nose \
+		python-scipy \
+		python-pyparsing \
+		python-dateutil \
+		python-six \
+		python-tornado \
+		python-wsgiref \
 		cython \
 		rlwrap \
 		libicu-dev \
@@ -94,9 +104,10 @@ if ! sudo apt-get $QUIET --no-upgrade --assume-yes install $PACKAGES; then
   MESSAGE="Please enable 'universe' repositories and re-run this script."  ; message
   exit 1
 fi
-for REQUIREMENTS in $(find $OPENCOG_SOURCE_DIR -iname requirements.txt) ; do
-  sudo pip install -r $REQUIREMENTS
-done
+#too many conflicts in requirments.txt; added to PACKAGES instead
+#for REQUIREMENTS in $(find $OPENCOG_SOURCE_DIR -iname requirements.txt) ; do
+#  sudo pip install --upgrade -r $REQUIREMENTS
+#done
 }
 
 add_repositories
