@@ -24,10 +24,10 @@ RUN apt-get install -y xserver-xephyr xdm xpra fluxbox rox-filer rxvt
 # Configuring xdm to allow connections from any IP address and ssh to allow X11 Forwarding.
 RUN sed -i 's/DisplayManager.requestPort/!DisplayManager.requestPort/g' /etc/X11/xdm/xdm-config
 RUN sed -i '/#any host/c\*' /etc/X11/xdm/Xaccess
-RUN ln -s /usr/bin/Xorg /usr/bin/X
+RUN ln -v -s /usr/bin/Xorg /usr/bin/X
 RUN echo ForwardX11 yes >> /etc/ssh/ssh_config
 # Upstart and DBus have issues inside docker. We work around in order to install firefox.
-RUN dpkg-divert --local --rename --add /sbin/initctl && ln -s /bin/true /sbin/initctl
+RUN dpkg-divert --local --rename --add /sbin/initctl && ln -v -s /bin/true /sbin/initctl
 # Set locale (fix the locale warnings)
 RUN localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
 
@@ -50,7 +50,7 @@ RUN apt-get -y install ant libcommons-logging-java
 # installs to /usr/local/share/java, not /usr/share/java, buggy lib path
 RUN wget http://www.abisource.com/downloads/link-grammar/4.7.14/link-grammar-4.7.14.tar.gz
 RUN tar -xvf link-grammar-4.7.14.tar.gz 
-RUN cd link-grammar-4.7.14 && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ./configure && make && make install && sudo ln -s /usr/local/lib/liblink-grammar.so.4 /usr/lib/liblink-grammar.so.4
+RUN cd link-grammar-4.7.14 && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ./configure && make && make install && sudo ln -v -s /usr/local/lib/liblink-grammar.so.4 /usr/lib/liblink-grammar.so.4
 
 # if sourceforge's auto-mirror is down you are SOL. C-c start over. sf sucks.
 RUN wget http://downloads.sourceforge.net/project/jwordnet/jwnl/JWNL%201.4/jwnl14-rc2.zip
@@ -59,8 +59,6 @@ RUN cp -v jwnl14-rc2/jwnl.jar /usr/share/java/ && chmod 0644 /usr/share/java/jwn
 
 RUN wget http://download.java.net/maven/2/gnu/getopt/java-getopt/1.0.13/java-getopt-1.0.13.jar
 RUN cp -v java-getopt-1.0.13.jar /usr/share/java/gnu-getopt.jar && chmod 0644 /usr/share/java/gnu-getopt.jar
-
-#todo: setup user to run relex
 
 RUN bzr branch lp:relex
 RUN cd relex && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ant

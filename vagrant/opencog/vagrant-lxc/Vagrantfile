@@ -1,0 +1,4 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "precise64-lxc"
+  config.vm.provision :shell, :inline => "sed -i 's/archive.ubuntu.com/au.archive.ubuntu.com/g' /etc/apt/sources.list"
+end

@@ -1,0 +1,105 @@
+#!/bin/bash
+#
+## @file		ocsetup
+## @copyright		OpenCog Foundation (2013)
+## @author		David Hart <dhart@opencog.org>
+## @section DESCRIPTION	A script to install dependencies to build OpenCog, for Vagrant, Docker
+## @section LICENSE	Permission to copy and modify is granted under the GPL
+## @section REQUIREMENT	Ubuntu Linux 12.04 (precise pangolin)
+## @section SEEALSO	ocpkg to download, build, test, install and package OpenCog
+
+# trap errors
+set -e
+
+message() {
+echo -e "\e[1;34m[$SELF_NAME] $MESSAGE\e[0m"
+}
+
+CURRENT_DIR=$(pwd)
+
+REPOSITORIES="		
+		ppa:opencog-dev/ppa \
+		"
+		#for cxxtest 3.x
+
+PACKAGES="	
+		g++-4.6 \
+		cmake \
+		cxxtest \
+		libboost-all-dev \
+		protobuf-compiler \
+		libzmq-dev \
+		guile-1.8-dev \
+		python-dev \
+		python-pip \
+		cython \
+		rlwrap \
+		libicu-dev \
+		libbz2-dev \
+		libgsl0-dev \
+		libxmlrpc-c3-dev \
+		unixodbc-dev \
+		libxerces-c2-dev \
+		tcl-dev \
+		tcsh \
+		uuid-dev \
+		libprotoc-dev \
+		libcurl4-gnutls-dev \
+		libsdl-gfx1.2-dev \
+		libssl-dev \
+                "
+
+PACKAGES_FETCH="	
+                git
+                "
+
+add_repositories() {
+if [ -f /etc/apt/sources.list.d/opencog-dev-ppa-precise.list ] ; then 
+  MESSAGE="opencog-dev software repository exists, skipping adding repositories..." ; message
+else
+  MESSAGE="Adding software repositories..." ; message
+  sudo apt-get $QUIET --no-upgrade --assume-yes install python-software-properties
+  for REPO in $REPOSITORIES ; do 
+    sudo apt-add-repository -y $REPO
+  done
+  sudo apt-get $QUIET --assume-yes update 
+fi
+}
+
+update_opencog_source() { 
+if sudo apt-get --no-upgrade --assume-yes $QUIET install $PACKAGES_FETCH ; then
+  echo -n
+else
+  MESSAGE="Please enable 'universe' repositories and re-run this script."  ; message
+exit 1
+fi
+OPENCOG_SOURCE_DIR=$CURRENT_DIR/opencog
+mkdir -p $OPENCOG_SOURCE_DIR || true
+if [ ! "$(ls -A $OPENCOG_SOURCE_DIR/.git)" ]; then
+  MESSAGE="Fetching OpenCog source at $OPENCOG_SOURCE_DIR..." ; message
+  git clone https://github.com/opencog/opencog $OPENCOG_SOURCE_DIR
+else
+  if [ $UPDATE_OPENCOG ] ; then
+    MESSAGE="Updating OpenCog source at $OPENCOG_SOURCE_DIR..." ; message
+    cd $OPENCOG_SOURCE_DIR
+    git pull 
+    cd -
+  fi
+fi
+}
+
+install_dependencies() {
+MESSAGE="Installing OpenCog build dependencies...." ; message
+if ! sudo apt-get $QUIET --no-upgrade --assume-yes install $PACKAGES; then
+  MESSAGE="Please enable 'universe' repositories and re-run this script."  ; message
+  exit 1
+fi
+for REQUIREMENTS in $(find $OPENCOG_SOURCE_DIR -iname requirements.txt) ; do
+  sudo pip install -r $REQUIREMENTS
+done
+}
+
+add_repositories
+update_opencog_source
+install_dependencies
+
