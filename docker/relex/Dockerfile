@@ -67,4 +67,4 @@ RUN cd relex && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ant
 ADD . /relex
 
 EXPOSE 22
-CMD ["/bin/bash", "/relex/startup.sh"]
+CMD ["/bin/bash", "/relex/docker-container-init.sh"]

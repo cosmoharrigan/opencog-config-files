@@ -15,13 +15,16 @@ adduser docker sudo
 chsh -s /bin/bash docker
 
 # Copy the config files into the docker directory
-cd /src; tar -C /home/docker -xvf config.tar
+#cd /src; tar -C /home/docker -xvf config.tar
 
 #Set all the files and subdirectories from /home/docker with docker permissions.
-chown -R docker:docker /home/docker/*
+chown -R docker:docker /home/docker /relex
 
 # restarts the xdm service
-/etc/init.d/xdm restart
+#/etc/init.d/xdm restart
 
 # Start the ssh service
 /usr/sbin/sshd -D
+
+# Start LinkGrammar and RelEx servers
+cd /relex ; ./heroku-webapp-servers.sh
