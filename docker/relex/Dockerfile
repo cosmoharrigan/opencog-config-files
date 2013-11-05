@@ -14,8 +14,8 @@ ENV DEBIAN_FRONTEND noninteractive
 #Adjust these to match your local mirror
 #RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 #RUN echo "deb http://archive.ubuntu.com/ubuntu precise-updates main universe" >> /etc/apt/sources.list
-RUN echo "deb http://mirror.optus.net.au/ubuntu precise main universe" > /etc/apt/sources.list
-RUN echo "deb http://mirror.optus.net.au/ubuntu precise-updates main universe" >> /etc/apt/sources.list
+RUN echo "deb http://hk.archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
+RUN echo "deb http://hk.archive.ubuntu.com/ubuntu precise-updates main universe" >> /etc/apt/sources.list
 RUN apt-get update && apt-get -y install python-software-properties wget unzip bzr ssh pwgen sudo less vim
 
 # Optional: for desktop-ish container. Thanks @rogaha
@@ -48,9 +48,9 @@ RUN apt-get -y install ant libcommons-logging-java
 #RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # installs to /usr/local/share/java, not /usr/share/java, buggy lib path
-RUN wget http://www.abisource.com/downloads/link-grammar/4.7.14/link-grammar-4.7.14.tar.gz
-RUN tar -xvf link-grammar-4.7.14.tar.gz 
-RUN cd link-grammar-4.7.14 && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ./configure && make && make install && sudo ln -v -s /usr/local/lib/liblink-grammar.so.4 /usr/lib/liblink-grammar.so.4
+RUN wget http://www.abisource.com/downloads/link-grammar/4.8.0/link-grammar-4.8.0.tar.gz
+RUN tar -xvf link-grammar-4.8.0.tar.gz
+RUN cd link-grammar-4.8.0 && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ./configure && make && make install && sudo ln -v -s /usr/local/lib/liblink-grammar.so.4 /usr/lib/liblink-grammar.so.4
 
 # if sourceforge's auto-mirror is down you are SOL. C-c start over. sf sucks.
 RUN wget http://downloads.sourceforge.net/project/jwordnet/jwnl/JWNL%201.4/jwnl14-rc2.zip
