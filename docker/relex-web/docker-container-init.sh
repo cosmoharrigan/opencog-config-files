@@ -27,4 +27,4 @@ chown -R docker:docker /home/docker /relex
 /usr/sbin/sshd -D
 
 # Start LinkGrammar and RelEx servers
-cd /relex ; ./heroku-webapp-servers.sh
+/relex/heroku-webapp-servers.sh

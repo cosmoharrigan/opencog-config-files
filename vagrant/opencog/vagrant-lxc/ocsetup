@@ -70,7 +70,6 @@ else
   for REPO in $REPOSITORIES ; do 
     sudo apt-add-repository -y $REPO
   done
-  sudo apt-get $QUIET --assume-yes update 
 fi
 }
 
