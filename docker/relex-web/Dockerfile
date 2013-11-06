@@ -18,15 +18,7 @@ RUN echo "deb http://hk.archive.ubuntu.com/ubuntu precise main universe" > /etc/
 RUN echo "deb http://hk.archive.ubuntu.com/ubuntu precise-updates main universe" >> /etc/apt/sources.list
 RUN apt-get update && apt-get -y install python-software-properties wget unzip bzr ssh pwgen sudo less vim
 
-# Optional: for desktop-ish container. Thanks @rogaha
-#           based on https://github.com/rogaha/docker-desktop
-RUN apt-get install -y xserver-xephyr xdm xpra fluxbox rox-filer rxvt
-# Configuring xdm to allow connections from any IP address and ssh to allow X11 Forwarding.
-RUN sed -i 's/DisplayManager.requestPort/!DisplayManager.requestPort/g' /etc/X11/xdm/xdm-config
-RUN sed -i '/#any host/c\*' /etc/X11/xdm/Xaccess
-RUN ln -v -s /usr/bin/Xorg /usr/bin/X
-RUN echo ForwardX11 yes >> /etc/ssh/ssh_config
-# Upstart and DBus have issues inside docker. We work around in order to install firefox.
+# Upstart and DBus have issues inside docker. We work around 
 RUN dpkg-divert --local --rename --add /sbin/initctl && ln -v -s /bin/true /sbin/initctl
 # Set locale (fix the locale warnings)
 RUN localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
@@ -34,14 +26,12 @@ RUN localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
 # Hack for fuse - remove when Docker supports privileged mode
 # openjdk-7-jdk needs fuse and fuse needs privileged mode, so
 RUN apt-get -y install fuse || :
-RUN rm -rf /var/lib/dpkg/info/fuse.postinst
-RUN apt-get -y install fuse
+RUN rm -rf /var/lib/dpkg/info/fuse.postinst && apt-get -y install fuse
 
 # Install RelEx dependencies & build
 
-#RUN apt-get -y install link-grammar
-RUN apt-get -y install build-essential #for compiling link-grammar
-RUN apt-get -y install wordnet-dev wordnet-sense-index
+#build-essential for compiling link-grammar
+RUN apt-get -y install wordnet-dev wordnet-sense-index build-essential 
 # braindead Ubuntu packaging, no headless jdk so get ready for GNOME
 RUN apt-get -y install openjdk-7-jdk 
 RUN apt-get -y install ant libcommons-logging-java
@@ -60,6 +50,7 @@ RUN cp -v jwnl14-rc2/jwnl.jar /usr/share/java/ && chmod 0644 /usr/share/java/jwn
 RUN wget http://download.java.net/maven/2/gnu/getopt/java-getopt/1.0.13/java-getopt-1.0.13.jar
 RUN cp -v java-getopt-1.0.13.jar /usr/share/java/gnu-getopt.jar && chmod 0644 /usr/share/java/gnu-getopt.jar
 
+# docker-container-init pulls changes
 RUN bzr branch lp:relex
 RUN cd relex && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ant
 
