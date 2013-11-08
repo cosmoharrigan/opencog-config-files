@@ -1,11 +1,9 @@
 # For use with Docker, a manager for Linux Containers
 # Download from https://www.docker.io/gettingstarted/
-# Overview at http://kencochrane.net/blog/2013/08/the-docker-guidebook/
-# Build with 'sudo docker build -t $USER/relex .'
-# Run with 'CONTAINER_ID=$(sudo docker run -d -p 7001:7001 -p 7002:7002 -p 7003:4444 -p 7004:7004 -p 7005:7005 -p 7006:7006 $USER/relex)'
-# Find IP, port and password from 'docker inspect' and 'docker logs'
-# From scratch, without first cloning RelEx source, run
-#  'docker build github.com/TBD'
+# Build: sudo docker build -t $USER/relex .
+# Run: CONTAINER_ID=$(sudo docker run -d -p 7001:7001 -p 7002:7002 -p 7003:4444 -p 7004:7004 -p 7005:7005 -p 7006:7006 $USER/relex)
+# Find IP: sudo docker inspect $CONTAINER_ID | grep IPAddress | cut -d '"' -f 4
+# Find password: sudo docker logs $CONTAINER_ID | sed -n 1p
 
 FROM ubuntu:12.04
 MAINTAINER David Hart "dhart@opencog.org"
