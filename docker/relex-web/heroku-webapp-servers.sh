@@ -3,7 +3,8 @@
 # see relation-extractor.sh for notes and options
 
 SCRIPT_HOME=$(dirname $0)
-
+cd $SCRIPT_HOME
+mkdir -v -p $SCRIPT_HOME/out 
 source $SCRIPT_HOME/relex-environment.sh
 
 nohup java $VM_OPTS -classpath $CLASSPATH org.linkgrammar.LGService \
