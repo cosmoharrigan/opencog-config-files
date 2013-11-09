@@ -1,40 +1,40 @@
 # For use with Docker, a manager for Linux Containers
 # Download from https://www.docker.io/gettingstarted/
 # Build: sudo docker build -t $USER/relex .
-# Run: CONTAINER_ID=$(sudo docker run -d -p 7001:7001 -p 7002:7002 -p 7003:4444 -p 7004:7004 -p 7005:7005 -p 7006:7006 $USER/relex)
+# Run: CONTAINER_ID=$(sudo docker run -d -p 7001:7001 -p 7002:7002 -p 7003:7003 -p 7004:7004 -p 7005:7005 -p 7006:7006 $USER/relex)
 # Find IP: CONTAINER_IP=$(sudo docker inspect $CONTAINER_ID | grep IPAddress | cut -d '"' -f 4)
 # Find password: sudo docker logs $CONTAINER_ID | sed -n 1p
 # Login: ssh docker@$CONTAINER_IP
 # Find logs in /relex/out
+# Adjust apt sources to match your local mirror
 
 FROM ubuntu:12.04
 MAINTAINER David Hart "dhart@opencog.org"
 
 ENV DEBIAN_FRONTEND noninteractive
-#Adjust these to match your local mirror
 RUN echo "deb http://hk.archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list && \
-    echo "deb http://hk.archive.ubuntu.com/ubuntu precise-updates main universe" >> /etc/apt/sources.list
-RUN apt-get update && \
+    echo "deb http://hk.archive.ubuntu.com/ubuntu precise-updates main universe" >> /etc/apt/sources.list && \
+    apt-get update && \
     apt-get -y install python-software-properties \
                        wget unzip bzr ssh pwgen sudo less vim
 
-# Upstart and DBus have issues inside docker. We work around 
-RUN dpkg-divert --local --rename --add /sbin/initctl && ln -v -s /bin/true /sbin/initctl
-# Set locale (fix the locale warnings)
-RUN localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
+# Work around Upstart/DBus issues & set locale (fix the locale warnings)
+RUN dpkg-divert --local --rename --add /sbin/initctl && \
+    ln -v -s /bin/true /sbin/initctl && \
+    localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
 
 # Hack for fuse - remove when Docker supports privileged mode
 # openjdk-7-jdk needs fuse and fuse needs privileged mode, so
-RUN apt-get -y install fuse || :
-RUN rm -rf /var/lib/dpkg/info/fuse.postinst && \
+RUN apt-get -y install fuse || : && \
+    rm -rf /var/lib/dpkg/info/fuse.postinst && \
     apt-get -y install fuse
 
 # Install RelEx dependencies & build
 # build-essential for compiling link-grammar
-RUN apt-get -y install wordnet-dev wordnet-sense-index build-essential 
 # braindead Ubuntu packaging, no headless jdk so get ready for GNOME
-RUN apt-get -y install openjdk-7-jdk 
-RUN apt-get -y install ant libcommons-logging-java
+RUN apt-get -y install wordnet-dev wordnet-sense-index build-essential && \
+    apt-get -y install openjdk-7-jdk && \
+    apt-get -y install ant libcommons-logging-java
 # RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # installs to /usr/local/share/java, not /usr/share/java, buggy lib path
