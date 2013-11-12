@@ -1,30 +1,39 @@
 # For use with Docker, a manager for Linux Containers
 # Download from https://www.docker.io/gettingstarted/
-# Overview at http://kencochrane.net/blog/2013/08/the-docker-guidebook/
-# Build with 'sudo docker build -t $USER/relex .'
-# Run with 'CONTAINER_ID=$(sudo docker run -d $USER/relex)'
-# Find IP, port and password from 'docker inspect' and 'docker logs'
-# From scratch, without first cloning RelEx source, run
-#  'docker build github.com/TBD'
+# Build: sudo docker build -t $USER/opencog .
+# Run: CONTAINER_ID=$(sudo docker run -d -p 17001:17001 $USER/opencog)
+# Find IP: CONTAINER_IP=$(sudo docker inspect $CONTAINER_ID | grep IPAddress | cut -d '"' -f 4)
+# Find password: sudo docker logs $CONTAINER_ID | sed -n 1p
+# Login: ssh docker@$CONTAINER_IP
+# Adjust apt sources to match your local mirror
 
 FROM ubuntu:12.04
 MAINTAINER David Hart "dhart@opencog.org"
 
 ENV DEBIAN_FRONTEND noninteractive
-#Adjust these to match your local mirror
-#RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-#RUN echo "deb http://archive.ubuntu.com/ubuntu precise-updates main universe" >> /etc/apt/sources.list
-RUN echo "deb http://mirror.optus.net.au/ubuntu precise main universe" > /etc/apt/sources.list
-RUN echo "deb http://mirror.optus.net.au/ubuntu precise-updates main universe" >> /etc/apt/sources.list
-RUN apt-get update && apt-get -y install python-software-properties wget unzip bzr ssh pwgen sudo less vim
+RUN echo "deb http://hk.archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list && \
+    echo "deb http://hk.archive.ubuntu.com/ubuntu precise-updates main universe" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get -y install python-software-properties wget ssh sudo less vim
 
-# Set locale (fix locale warnings)
-RUN localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
+# Work around Upstart/DBus issues & set locale (fix the locale warnings)
+RUN dpkg-divert --local --rename --add /sbin/initctl && \
+    ln -v -s /bin/true /sbin/initctl && \
+    localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
 
-# Install OpenCog depedencies
+# Get ocpkg script
+RUN mkdir -v /opencog
+RUN wget -N https://raw.github.com/githart/opencog-config-files/master/docker/opencog/precise/ocpkg -O /opencog/ocpkg
+
+# Run ocpkg/octool to: add repositories, install depencies, update source, build OpenCog
+RUN ln -s -v /opencog/ocpkg /opencog/octool
+RUN /opencog/octool -v -a
+RUN /opencog/octool -v -d
+RUN /opencog/octool -v -u
+RUN /opencog/octool -v -b
 
 # Copy context files into the container
-ADD ocsetup /opencog
+ADD . /opencog
 
 EXPOSE 22
-CMD    /usr/sbin/sshd -D
+CMD ["/bin/bash", "/opencog/docker-container-init.sh"]
