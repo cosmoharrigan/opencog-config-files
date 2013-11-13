@@ -21,10 +21,10 @@ RUN dpkg-divert --local --rename --add /sbin/initctl && \
     ln -v -s /bin/true /sbin/initctl && \
     localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
 
-# Get ocpkg script
-RUN mkdir -v /opencog
-RUN wget -N https://raw.github.com/githart/opencog-config-files/master/docker/opencog/precise/ocpkg -O /opencog/ocpkg
-RUN chmod u+x /opencog/ocpkg
+# Get ocpkg script, replace wget with ADD when caching feature is added
+RUN mkdir -v /opencog && \
+    wget -N https://raw.github.com/githart/opencog-config-files/master/docker/opencog/precise/ocpkg -O /opencog/ocpkg && \
+    chmod u+x /opencog/ocpkg
 
 # Run ocpkg/octool to: add repositories, install depencies, update source, build OpenCog
 RUN ln -s -v /opencog/ocpkg /opencog/octool
