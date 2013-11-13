@@ -90,13 +90,12 @@ LIVE_SOURCE_BRANCH=$HOST_SOURCE_BRANCH
 LIVE_BUILD_DIR=$HOST_BUILD_DIR
 
 VERBOSE="-v"				#for mount, umount, rm, etc.
-QUIET="-qq" 				#for apt-get
+QUIET="" 				#for apt-get
 
 LIVE_DESKTOP_SOURCE="OpenCog Source Code"
 
 REPOSITORIES="		
 		ppa:opencog-dev/ppa \
-                ppa:chris-lea/zeromq \
 		"
 		#opencog-dev: cxxtest
 
@@ -129,14 +128,19 @@ PACKAGES_BUILD="
 		libicu-dev \
 		libbz2-dev \
 		cython \
+		python-dev \
 		python-zmq \
 		python-matplotlib \
 		python-nose \
 		python-numpy \
-		python-setuptools \
-		python-distutils-extra \
 		python-scipy \
 		python-mock \
+		python-flask \
+                python-pyparsing \
+                python-dateutil \
+                python-six \
+                python-tornado \
+                python-wsgiref \
 		libboost-all-dev \
 		libgsl0-dev \
 		libxmlrpc-c3-dev \
@@ -145,14 +149,13 @@ PACKAGES_BUILD="
 		tcl-dev \
 		tcsh \
 		uuid-dev \
-		libzmq3-dev \
+		libzmq-dev \
 		libprotoc-dev \
 		protobuf-compiler \
 		libcurl4-gnutls-dev \
 		libexpat1-dev \
 		libsdl-gfx1.2-dev \
 		libssl-dev \
-		python-dev \
 		"
 		#liblua5.1-0-dev \
 
@@ -330,7 +333,7 @@ else
 fi 
 }
 
-while getopts ":i:o:j:s:c:l:r:adunbtrvh" flag ; do
+while getopts ":i:o:j:s:c:l:r:adubnxtrvh" flag ; do
   case $flag in
     i)	INPUT_ISO_NAME="$OPTARG" ;;          
     o)	OUTPUT_ISO_NAME="$OPTARG" ;;          
@@ -342,8 +345,9 @@ while getopts ":i:o:j:s:c:l:r:adunbtrvh" flag ; do
     a)	ADD_REPOSITORIES=true ;;
     d)	INSTALL_DEPENDENCIES=true ;;		#ALL, none
     u)	UPDATE_OPENCOG=true ;;			#git pull
+    b)	BUILD_OPENCOG=true ;;			#build opencog
     n)	unset DEFAULT_UPDATE_OPENCOG ;;		#suppress git update
-    b)	unset DEFAULT_BUILD_OPENCOG ;;		#suppress build
+    x)	unset DEFAULT_BUILD_OPENCOG ;;		#suppress build
     t)	unset DEFAULT_TEST_OPENCOG ;;           #suppress test
     p)	REINSTALL_PACKAGES=true ;; 
     v)	unset QUIET ;; 
@@ -762,7 +766,6 @@ case $PACKAGE_TYPE in
 esac
 
 case $PACKAGE_TYPE in
-  local) if [ $BUILD_OPENCOG ] ; then build_opencog ; fi ;;
   demo)  if [ $BUILD_OPENCOG ] ; then chroot $LIVE_SQUASH_UNION $PATH_PREFIX/bin/$TOOL_NAME $VERBOSE -b ; fi ;;
   min)   if [ $BUILD_OPENCOG ] ; then chroot $LIVE_SQUASH_UNION $PATH_PREFIX/bin/$TOOL_NAME $VERBOSE -b ; fi ;;
   dev)   if [ $BUILD_OPENCOG ] ; then chroot $LIVE_SQUASH_UNION $PATH_PREFIX/bin/$TOOL_NAME $VERBOSE -b ; fi ;;

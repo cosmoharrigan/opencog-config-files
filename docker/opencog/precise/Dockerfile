@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN echo "deb http://hk.archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list && \
     echo "deb http://hk.archive.ubuntu.com/ubuntu precise-updates main universe" >> /etc/apt/sources.list && \
     apt-get update && \
-    apt-get -y install python-software-properties wget ssh sudo less vim
+    apt-get -y install python-software-properties wget ssh sudo pwgen
 
 # Work around Upstart/DBus issues & set locale (fix the locale warnings)
 RUN dpkg-divert --local --rename --add /sbin/initctl && \
@@ -24,12 +24,14 @@ RUN dpkg-divert --local --rename --add /sbin/initctl && \
 # Get ocpkg script
 RUN mkdir -v /opencog
 RUN wget -N https://raw.github.com/githart/opencog-config-files/master/docker/opencog/precise/ocpkg -O /opencog/ocpkg
+RUN chmod u+x /opencog/ocpkg
 
 # Run ocpkg/octool to: add repositories, install depencies, update source, build OpenCog
 RUN ln -s -v /opencog/ocpkg /opencog/octool
 RUN /opencog/octool -v -a
 RUN /opencog/octool -v -d
 RUN /opencog/octool -v -u
+RUN mkdir -v -p /opencog/src/bin
 RUN /opencog/octool -v -b
 
 # Copy context files into the container
