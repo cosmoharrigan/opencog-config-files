@@ -19,7 +19,9 @@ RUN echo "deb http://hk.archive.ubuntu.com/ubuntu precise main universe" > /etc/
 # Work around Upstart/DBus issues & set locale (fix the locale warnings)
 RUN dpkg-divert --local --rename --add /sbin/initctl && \
     ln -v -s /bin/true /sbin/initctl && \
-    localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
+    sudo locale-gen en_US en_US.UTF-8 && \
+    sudo dpkg-reconfigure locales
+#   localedef -c -i en_US -f UTF-8 en_US.UTF-8 || :
 
 # Get ocpkg script, replace wget with ADD when caching feature is added
 RUN mkdir -v /opencog && \
