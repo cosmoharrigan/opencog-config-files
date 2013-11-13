@@ -32,7 +32,7 @@ RUN /opencog/octool -v -a
 RUN /opencog/octool -v -d
 RUN /opencog/octool -v -u
 RUN mkdir -v -p /opencog/src/bin
-RUN /opencog/octool -v -b
+RUN /opencog/octool -v -b -l /opencog/src/bin
 
 # Copy context files into the container
 ADD . /opencog
