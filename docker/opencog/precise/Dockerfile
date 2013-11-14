@@ -1,7 +1,7 @@
 # For use with Docker, a manager for Linux Containers
 # Download from https://www.docker.io/gettingstarted/
 # Build: sudo docker build -t $USER/opencog .
-# Run: CONTAINER_ID=$(sudo docker run -d -p 17001:17001 $USER/opencog)
+# Run: CONTAINER_ID=$(sudo docker run -d -p 17001:17001 -p 5000:5000 $USER/opencog)
 # Find IP: CONTAINER_IP=$(sudo docker inspect $CONTAINER_ID | grep IPAddress | cut -d '"' -f 4)
 # Find password: sudo docker logs $CONTAINER_ID | sed -n 1p
 # Login: ssh docker@$CONTAINER_IP
