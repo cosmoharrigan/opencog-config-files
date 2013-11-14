@@ -12,6 +12,7 @@ chsh -s /bin/bash docker
 # Run CogServer from hacky old source tree
 ln -s -v /opencog /home/docker/opencog
 chown -R docker:docker /opencog /home/docker
+export LC_ALL=en_US.UTF-8
 su - -s /bin/bash -c 'cd /home/docker/opencog/src/bin && \
 nohup opencog/server/cogserver -c lib/opencog.conf &> /tmp/cogserver.out &' docker
 
