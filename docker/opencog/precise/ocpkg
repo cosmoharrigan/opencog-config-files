@@ -97,8 +97,10 @@ LIVE_DESKTOP_SOURCE="OpenCog Source Code"
 REPOSITORIES="		
 		ppa:opencog-dev/ppa \
                 ppa:chris-lea/zeromq \
+                ppa:gandelman-a/test-catalog \
 		"
 		#opencog-dev: cxxtest
+		#gandelman: python-flask-restful
 
 PACKAGES_TOOLS="	
 		squashfs-tools \
@@ -137,6 +139,7 @@ PACKAGES_BUILD="
 		python-scipy \
 		python-mock \
 		python-flask \
+		python-flask-restful \
                 python-pyparsing \
                 python-dateutil \
                 python-six \
