@@ -55,7 +55,7 @@ RUN wget http://download.java.net/maven/2/gnu/getopt/java-getopt/1.0.13/java-get
     chmod 0644 /usr/share/java/gnu-getopt.jar
 
 # docker-container-init pulls changes
-RUN bzr branch lp:relex
+RUN bzr branch -v lp:relex
 RUN cd relex && JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64 ant
 
 # Copy context files into the container
