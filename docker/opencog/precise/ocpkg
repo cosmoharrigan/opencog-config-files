@@ -98,6 +98,7 @@ REPOSITORIES="
 		ppa:opencog-dev/ppa \
                 ppa:chris-lea/zeromq \
 		ppa:chris-lea/python-flask \
+                ppa:chris-lea/python-itsdangerous \
                 ppa:gandelman-a/test-catalog \
 		"
 		#opencog-dev: cxxtest
